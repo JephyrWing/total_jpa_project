@@ -1,47 +1,54 @@
 spring:
   application:
-    # \uD504\uB85C\uC81D\uD2B8 \uC774\uB984
+    # 프로젝트 이름
     name: total_jpa_back
 
   datasource:
-    # MySQL \uB4DC\uB77C\uC774\uBC84
+    # MySQL 드라이버
     driver-class-name: com.mysql.cj.jdbc.Driver
 
-    # DB \uC5F0\uACB0 \uC8FC\uC18C
+    # DB 연결 주소
     url: jdbc:mysql://localhost:3306/total_jpa
 
-    # \uD658\uACBD\uBCC0\uC218 DB_USER \uC5C6\uC73C\uBA74 root \uC0AC\uC6A9
+    # 환경변수 DB_USER 없으면 root 사용
     username: ${DB_USER:root}
 
-    # \uD658\uACBD\uBCC0\uC218 DB_PW \uC5C6\uC73C\uBA74 1111 \uC0AC\uC6A9
+    # 환경변수 DB_PW 없으면 1111 사용
     password: ${DB_PW:1111}
 
   jpa:
     hibernate:
-      # \uC2E4\uD589 \uC2DC \uD14C\uC774\uBE14 \uC790\uB3D9 \uC5C5\uB370\uC774\uD2B8
-      # create : \uC2E4\uD589\uB9C8\uB2E4 \uC0C8\uB85C \uC0DD\uC131
-      # update : \uBCC0\uACBD\uC0AC\uD56D\uB9CC \uBC18\uC601
-      # validate : \uC5D4\uD2F0\uD2F0\uC640 \uD14C\uC774\uBE14 \uAC80\uC99D
-      # none : \uC0AC\uC6A9 \uC548\uD568
-      ddl-auto: update
+      # 실행 시 테이블 자동 업데이트
+      # create : 실행마다 새로 생성
+      # update : 변경사항만 반영
+      # validate : 엔티티와 테이블 검증
+      # none : 사용 안함
+      ddl-auto: validate
 
     properties:
       hibernate:
-        # \uC2E4\uD589 SQL \uCD9C\uB825
+        # 실행 SQL 출력
         show_sql: true
 
-        # SQL \uC608\uC058\uAC8C \uCD9C\uB825
+        # SQL 예쁘게 출력
         format_sql: true
 
-    # MySQL \uBC29\uC5B8 \uC124\uC815
+    # MySQL 방언 설정
     database-platform: org.hibernate.dialect.MySQLDialect
+
+    #JPA 테이블을 생성한 후에 data.sql을 실행해라
+    defer-datasource-initialization: true
 
   autoconfigure:
     exclude:
-      # \uC2A4\uD504\uB9C1 \uC2DC\uD050\uB9AC\uD2F0 \uAE30\uBCF8 \uB85C\uADF8\uC778 \uBE44\uD65C\uC131\uD654
+      # 스프링 시큐리티 기본 로그인 비활성화
       - org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
+
+#  sql:
+#    init:
+#      mode: always # data.sql을 항상 실행(따라서 한번 실행한 뒤 주석처리하고 나중에 데이터 날아가거나 하면 다시 살려서 사용)
 
 logging:
   level:
-    # \uBC14\uC778\uB529 \uD30C\uB77C\uBBF8\uD130 \uCD9C\uB825
+    # 바인딩 파라미터 출력
     org.hibernate.orm.jdbc.bind: trace
