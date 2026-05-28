@@ -1,5 +1,9 @@
 package com.my.total_jpa_back.users.controller;
+
 import com.my.total_jpa_back.common.entity.Gender;
+import com.my.total_jpa_back.common.exception.UserNotFoundException;
+import com.my.total_jpa_back.users.dto.HelloRequest;
+import com.my.total_jpa_back.users.dto.HelloResponse;
 import com.my.total_jpa_back.users.entity.Users;
 import com.my.total_jpa_back.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +28,7 @@ public class UserController {
     }
 
     @GetMapping("/gender/{gender}")
-    public List<Users> findByGender(@PathVariable("gender") Gender gender){
+    public List<Users> findByGender(@PathVariable("gender") Gender gender) {
         return userRepository.findByGender(gender);
     }
 
@@ -60,16 +64,32 @@ public class UserController {
     }
 
     @GetMapping("/page")
-    public Page<Users> findAllPage(@RequestParam(name = "page", defaultValue = "0")int page,
-                                   @RequestParam(name = "size", defaultValue = "10")int size) {
+    public Page<Users> findAllPage(@RequestParam(name = "page", defaultValue = "0") int page,
+                                   @RequestParam(name = "size", defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         return userRepository.findAll(pageable);
     }
 
     @GetMapping("/slice")
-    public Slice<Users> findAllSlice(@RequestParam(name = "page", defaultValue = "0")int page,
-                                     @RequestParam(name = "size", defaultValue = "10")int size) {
+    public Slice<Users> findAllSlice(@RequestParam(name = "page", defaultValue = "0") int page,
+                                     @RequestParam(name = "size", defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-        return userRepository.findAllSlice(pageable);
+        return userRepository.findAll(pageable);
+    }
+
+    // RequestBody 테스트
+    @PostMapping("/test")
+    // RequestBody : json으로 들어온 데이터를 받음
+    public HelloResponse test(@RequestBody HelloRequest request) {
+        return HelloResponse.builder()
+                .message("안녕하세요" + request.getName())
+                .age(request.getAge())
+                .build();
+    }
+
+    // 예외처리 테스트
+    @GetMapping("/users/{id}")
+    public Users findById(@PathVariable Long id){
+        return userRepository.findById(id).orElseThrow(()-> new UserNotFoundException());
     }
 }
