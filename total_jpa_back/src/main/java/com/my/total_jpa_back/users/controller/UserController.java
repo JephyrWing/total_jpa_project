@@ -92,4 +92,7 @@ public class UserController {
     public Users findById(@PathVariable Long id){
         return userRepository.findById(id).orElseThrow(()-> new UserNotFoundException());
     }
+
+
+    
 }
