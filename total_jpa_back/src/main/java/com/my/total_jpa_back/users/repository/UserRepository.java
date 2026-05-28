@@ -2,6 +2,8 @@ package com.my.total_jpa_back.users.repository;
 
 import com.my.total_jpa_back.common.entity.Gender;
 import com.my.total_jpa_back.users.entity.Users;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -20,5 +22,9 @@ public interface UserRepository extends JpaRepository<Users, Long> {
     // 4. 색상과 성별로 검색
     List<Users> findByLikeColorAndGender(String color, Gender gender);
 
+    // 5. email 중 특정 도메인 포함 이베일 계정 찾기
+    List<Users> findByEmailContaining(String domain);
 
+    // Slice용
+    Slice<Users> findAllSlice(Pageable pageable);
 }
