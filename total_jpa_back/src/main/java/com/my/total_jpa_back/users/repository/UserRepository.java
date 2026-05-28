@@ -25,6 +25,4 @@ public interface UserRepository extends JpaRepository<Users, Long> {
     // 5. email 중 특정 도메인 포함 이베일 계정 찾기
     List<Users> findByEmailContaining(String domain);
 
-    // Slice용
-    Slice<Users> findAllSlice(Pageable pageable);
 }
