@@ -1,12 +1,13 @@
-package com.my.total_jpa_back.repository;
+package com.my.total_jpa_back.users.repository;
 
-import com.my.total_jpa_back.entity.Gender;
-import com.my.total_jpa_back.entity.Users;
+import com.my.total_jpa_back.common.entity.Gender;
+import com.my.total_jpa_back.users.entity.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
 public interface UserRepository extends JpaRepository<Users, Long> {
+    // Query Method table의 snake case를 camel case로 바꾸는 것에 유의
     // 1. 성별로 조회
     List<Users> findByGender(Gender gender); // 이렇게 까지만 쓰면 JPA가 알아서 완성해준다.
 

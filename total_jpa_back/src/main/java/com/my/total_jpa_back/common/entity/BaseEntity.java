@@ -1,4 +1,4 @@
-package com.my.total_jpa_back.entity;
+package com.my.total_jpa_back.common.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
