@@ -2,10 +2,10 @@ package com.my.total_jpa_back.users.controller;
 
 import com.my.total_jpa_back.common.entity.Gender;
 import com.my.total_jpa_back.common.exception.UserNotFoundException;
-import com.my.total_jpa_back.users.dto.HelloRequest;
-import com.my.total_jpa_back.users.dto.HelloResponse;
+import com.my.total_jpa_back.users.dto.*;
 import com.my.total_jpa_back.users.entity.Users;
 import com.my.total_jpa_back.users.repository.UserRepository;
+import com.my.total_jpa_back.users.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +18,7 @@ import java.util.List;
 @RequestMapping("/api")
 public class UserController {
     private final UserRepository userRepository;
+    private final UserService userService;
 
     // 전체 리스트를 요청
     // 이건 테스트 용이라 entity를 그대로 리스트로 만들어 보내지만
@@ -93,6 +94,27 @@ public class UserController {
         return userRepository.findById(id).orElseThrow(()-> new UserNotFoundException());
     }
 
+    // 새로운 User 추가하기 API
+    @PostMapping("/users")
+    public UserResponse create(@RequestBody UserCreateRequest request) {
+        return userService.create(request);
+    }
 
-    
+    // User Update API
+    // 수정 대상(ID)은 PathVariable, 값은 RequestBody로 받아서 수정
+    @PutMapping("/users/{id}")
+    public UserResponse update(
+            @PathVariable Long id,
+            @RequestBody UserUpdateRequest request
+            ) {
+        return userService.update(id, request);
+    }
+
+    // User ID로 삭제처리 API 만들기
+    @DeleteMapping("/users/{id}")
+    public String delete(@PathVariable Long id){
+        userService.delete(id);
+        return "삭제 완료";
+    }
+
 }
