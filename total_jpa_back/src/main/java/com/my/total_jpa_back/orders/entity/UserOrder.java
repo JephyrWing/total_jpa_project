@@ -1,5 +1,7 @@
-package com.my.total_jpa_back.entity;
+package com.my.total_jpa_back.orders.entity;
 
+import com.my.total_jpa_back.common.entity.BaseEntity;
+import com.my.total_jpa_back.common.entity.OrderStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,4 +25,6 @@ public class UserOrder extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
+
+
 }

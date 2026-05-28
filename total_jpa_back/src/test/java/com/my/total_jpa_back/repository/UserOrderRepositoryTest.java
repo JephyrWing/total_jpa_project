@@ -1,12 +1,14 @@
 package com.my.total_jpa_back.repository;
 
-import com.my.total_jpa_back.entity.OrderStatus;
-import com.my.total_jpa_back.entity.UserOrder;
+import com.my.total_jpa_back.common.entity.OrderStatus;
+import com.my.total_jpa_back.orders.entity.UserOrder;
+import com.my.total_jpa_back.orders.repository.UserOrderRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Sort;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -109,5 +111,23 @@ class UserOrderRepositoryTest {
         for(UserOrder order : orders) {
             log.info("productname = {}, status = {}", order.getProductName() , order.getStatus());
         }
+    }
+
+    //===============================================================================================================
+    // Sort
+
+    @Test
+    @DisplayName("주문 상태 오름차순, 제품명 내림차순, 주문일 내림차순")
+    void multiSortTest() {
+        Sort sort = Sort
+                .by("status")
+                .ascending()
+                .and(Sort
+                        .by("productName")
+                        .descending()
+                        .and(Sort.by("createdAt").descending())
+                );
+        List<UserOrder> orders = userOrderRepository.findAll(sort);
+        orders.stream().limit(500).forEach(x->log.info("status: {}, productName : {}, createdAt : {}", x.getStatus(), x.getProductName(), x.getCreatedAt()));
     }
 }
