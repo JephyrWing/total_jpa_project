@@ -1,8 +1,12 @@
 package com.my.total_jpa_back.orders.repository;
 
 import com.my.total_jpa_back.common.entity.OrderStatus;
+import com.my.total_jpa_back.orders.dto.OrderResponse;
 import com.my.total_jpa_back.orders.entity.UserOrder;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
 import java.util.List;
 
 public interface UserOrderRepository extends JpaRepository<UserOrder, Long> {
@@ -33,4 +37,66 @@ public interface UserOrderRepository extends JpaRepository<UserOrder, Long> {
     // 상태 여러 개 조회(In) in 안에 조건이 여러개 들어갈 수 있으니 parameter를 리스트로 줘야 받아먹는다.
     List<UserOrder> findByStatusIn(List<OrderStatus> statuslist);
 
+    @Query("""
+    select new com.my.total_jpa_back.orders.dto.OrderResponse(
+        o.id,
+             o.productName,
+                  o.price,
+                       u.name,
+                           o.status,
+                               o.createdAt
+        )
+        from UserOrder o
+            join o.user u
+                order by o.id
+    """)
+    List<OrderResponse> findAllWithUsers();
+
+    @Query("""
+    select new com.my.total_jpa_back.orders.dto.OrderResponse(
+        o.id,
+             o.productName,
+                  o.price,
+                       u.name,
+                            o.status,
+                               o.createdAt
+        )
+        from UserOrder o
+            join o.user u
+                where o.status = :status
+    """)
+    List<OrderResponse> findByStatusWithUsers(@Param("status") OrderStatus status);
+
+    @Query("""
+    select new com.my.total_jpa_back.orders.dto.OrderResponse(
+        o.id,
+             o.productName,
+                  o.price,
+                       u.name,
+                            o.status,
+                               o.createdAt
+        )
+        from UserOrder o
+            join o.user u
+                where o.status = :status and o.price >= :price and u.name like %:name%
+                    order by o.createdAt desc
+    """)
+    List<OrderResponse> findByMultiConditionWithUsers(@Param("status") OrderStatus status,
+                                                      @Param("price") Integer price,
+                                                      @Param("name") String name);
+
+    @Query("""
+    select new com.my.total_jpa_back.orders.dto.OrderResponse(
+        o.id,
+             o.productName,
+                  o.price,
+                       u.name,
+                            o.status,
+                                o.createdAt
+        )
+        from UserOrder o
+            join o.user u
+                where u.id = :id
+    """)
+    List<OrderResponse> findByUserIdWithUsers(@Param("id") Long id);
 }
