@@ -5,6 +5,7 @@ import com.my.total_jpa_back.users.entity.Users;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
@@ -25,4 +26,12 @@ public interface UserRepository extends JpaRepository<Users, Long> {
     // 5. email 중 특정 도메인 포함 이베일 계정 찾기
     List<Users> findByEmailContaining(String domain);
 
+    // JPQL(자바 기반의 SQL)
+//    @Query("""
+//            select distinct u
+//            from Users u
+//            join fetch u.orders
+//            """)
+//    // 일대다인 경우에는 join에 fetch를 붙여야 퀴리를 여러번 실행하지 않고 한번에 가져온다.
+//    List<Users> findAllWithOrders();
 }

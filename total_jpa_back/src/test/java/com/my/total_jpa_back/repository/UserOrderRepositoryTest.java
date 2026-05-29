@@ -1,6 +1,7 @@
 package com.my.total_jpa_back.repository;
 
 import com.my.total_jpa_back.common.entity.OrderStatus;
+import com.my.total_jpa_back.orders.dto.OrderResponse;
 import com.my.total_jpa_back.orders.entity.UserOrder;
 import com.my.total_jpa_back.orders.repository.UserOrderRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Sort;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +38,8 @@ class UserOrderRepositoryTest {
         }
     }
 
+
+
     @Test
     @DisplayName("상품명 포함 검색")
     void findByProductNameContaining() {
@@ -54,23 +58,23 @@ class UserOrderRepositoryTest {
         }
     }
 
-    @Test
-    @DisplayName("특정 회원 주문 조회")
-    void findByUserId() {
-        List<UserOrder> orders = userOrderRepository.findByUserId(10L);
-        for(UserOrder order : orders) {
-            log.info("productname = {}, userid = {}", order.getProductName() , order.getUserId());
-        }
-    }
+//    @Test
+//    @DisplayName("특정 회원 주문 조회")
+//    void findByUserId() {
+//        List<UserOrder> orders = userOrderRepository.findByUserId(10L);
+//        for(UserOrder order : orders) {
+//            log.info("productname = {}, userid = {}", order.getProductName() , order.getUserId());
+//        }
+//    }
 
-    @Test
-    @DisplayName("회원 + 주문상태 조회")
-    void findByUserIdAndStatus() {
-        List<UserOrder> orders = userOrderRepository.findByUserIdAndStatus(10L, OrderStatus.COMPLETE);
-        for(UserOrder order : orders) {
-            log.info("productname = {}, userid = {}, status = {}", order.getProductName() , order.getUserId(), order.getStatus());
-        }
-    }
+//    @Test
+//    @DisplayName("회원 + 주문상태 조회")
+//    void findByUserIdAndStatus() {
+//        List<UserOrder> orders = userOrderRepository.findByUserIdAndStatus(10L, OrderStatus.COMPLETE);
+//        for(UserOrder order : orders) {
+//            log.info("productname = {}, userid = {}, status = {}", order.getProductName() , order.getUserId(), order.getStatus());
+//        }
+//    }
 
     @Test
     @DisplayName("가격 범위 조회")
@@ -129,5 +133,32 @@ class UserOrderRepositoryTest {
                 );
         List<UserOrder> orders = userOrderRepository.findAll(sort);
         orders.stream().limit(500).forEach(x->log.info("status: {}, productName : {}, createdAt : {}", x.getStatus(), x.getProductName(), x.getCreatedAt()));
+    }
+
+    //===============================================================================================================
+
+    // ManyToOne Test
+    @Test
+    @DisplayName("주문 조회/ 조회 후 회원정보 확인")
+    @Transactional // LAZY 로딩은 쿼리가 두번 실행되기 때문에 transactional로 묶어줘야 오류가 안 터짐
+    void findOrderAndUserTest(){
+        UserOrder order = userOrderRepository.findById(1L)
+                .orElseThrow();
+        log.info("orderId = {}", order.getId());
+        log.info("제품명 = {}", order.getProductName());
+        log.info("가격 = {}", order.getPrice());
+        log.info("배송상태 = {}", order.getStatus());
+        log.info("주문고객 = {}", order.getUser().getName());
+        log.info("이메일 = {}", order.getUser().getEmail());
+    }
+
+    @Test
+    @DisplayName("DTO로 결과받기")
+    @Transactional
+    void dtoResultTest() {
+        List<OrderResponse> result = userOrderRepository.findAllWithUsers();
+        result.stream().limit(100).forEach(x->
+                log.info("주문번호 : {}, 제품명 : {}, 가격 : {}, 고객명 : {}, 주문 시간 : {}",
+                        x.getOrderId(), x.getProductName(), x.getPrice(), x.getUserName(), x.getOrderCreatedAt()));
     }
 }

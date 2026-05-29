@@ -2,9 +2,13 @@ package com.my.total_jpa_back.users.entity;
 
 import com.my.total_jpa_back.common.entity.BaseEntity;
 import com.my.total_jpa_back.common.entity.Gender;
+import com.my.total_jpa_back.orders.entity.UserOrder;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -24,6 +28,10 @@ public class Users extends BaseEntity {
 
     @Column(name = "like_color")
     private String likeColor;
+
+    // Users entity의 user가 연관관계의 주인이다.
+//    @OneToMany(mappedBy = "user") // mappedBy에 넣는 컬럼명은 DB기준 컬럼명이 아닌 엔티티에서 선언한 이름을 넣어야한다.
+//    private List<UserOrder> orders = new ArrayList<>();
 
     @Override
     public String toString() {

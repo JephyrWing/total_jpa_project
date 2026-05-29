@@ -1,6 +1,7 @@
 package com.my.total_jpa_back.repository;
 
 import com.my.total_jpa_back.common.entity.Gender;
+import com.my.total_jpa_back.orders.entity.UserOrder;
 import com.my.total_jpa_back.users.entity.Users;
 import com.my.total_jpa_back.users.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.*;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -175,4 +177,45 @@ class UserRepositoryTest {
         log.info("이전 페이지 여부 : " + result.hasPrevious());
         users.forEach(x -> log.info("All : {}", x));
     }
+
+//    @Test
+//    @DisplayName("회원정보 조회 후 주문정보 찾아보기")
+//    @Transactional
+//    void findUserAndOrderInfoTest() {
+//        Users user = userRepository.findById(1L)
+//                .orElseThrow();
+//        log.info("이름 : {}", user.getName());
+//        user.getOrders().forEach(x ->
+//                log.info("제품명 : {}, 가격 : {}", x.getProductName(), x.getPrice()));
+//    }
+
+//    @Test
+//    @DisplayName("N+1 문제 확인")
+//    @Transactional
+//    void nPlusOneTest(){
+//        List<Users> user = userRepository.findAll();
+//        user.forEach(x->
+//                {
+//                    log.info("이름 : {}", x.getName());
+//                    x.getOrders().forEach(y ->
+//                            log.info("주문 번호 : {}, 제품명 : {}, 가격 : {}", y.getId(), y.getProductName(), y.getPrice())
+//                    );
+//                }
+//        );
+//    }
+
+//    @Test
+//    @DisplayName("JPQL로 가져오기")
+//    @Transactional
+//    void joinTest() {
+//        List<Users> user = userRepository.findAllWithOrders();
+//        user.forEach(x->
+//                {
+//                    log.info("이름 : {}", x.getName());
+//                    x.getOrders().forEach(y ->
+//                            log.info("주문 번호 : {}, 제품명 : {}, 가격 : {}", y.getId(), y.getProductName(), y.getPrice())
+//                    );
+//                }
+//        );
+//    }
 }
